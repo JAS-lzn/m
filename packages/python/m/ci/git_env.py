@@ -1,5 +1,7 @@
 import re
+from re import Pattern
 
+from m.ci.types import Branches
 from m.ci.versioning import VersionInputs, build_m_tag, build_py_tag
 from m.core.maybe import maybe
 from m.log import EnvVars
@@ -103,6 +105,18 @@ class GitEnv(BaseModel):
             The pull request number or 0 if not a pull request.
         """
         return self.pull_request.pr_number if self.pull_request else 0
+
+    def create_branch_regex(self, branch: str) -> Pattern[str]:
+        """Creates a regex pattern to match the given branch style
+
+        Args:
+            branch type you want to match
+
+        Returns:
+            Regex pattern that matches [branch_type]/x.y.z
+        """
+        return re.compile("{0}+/+\d+\.+\d+\.+\d$".format(branch))
+
 
     def is_release(self, config: Config) -> bool:
         """Determine if the current commit should create a release.
