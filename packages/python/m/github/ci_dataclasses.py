@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional
 
 from m.pydantic import CamelModel
@@ -59,7 +60,8 @@ class Commit(BaseModel):
         """
         if not release_prefix:
             return False
-        return self.get_pr_branch().startswith(release_prefix)
+        return re.search(release_prefix, self.get_pr_branch) is not None
+
 
 
 class PullRequest(BaseModel):
@@ -89,7 +91,7 @@ class PullRequest(BaseModel):
         """
         if not release_prefix:
             return False
-        return self.pr_branch.startswith(release_prefix)
+        return re.search(release_prefix, self.pr_branch) is not None
 
 
 class Release(BaseModel):
